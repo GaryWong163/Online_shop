@@ -1,0 +1,161 @@
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #cec9bf;
+}
+
+header {
+  background-color: #333;
+  width: 100%;
+  text-align: right;
+  color: #fff;
+  padding: 10px;
+}
+
+.navbar {
+  background-color: #333;
+  overflow: hidden;
+}
+
+.navbar ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: flex-start;
+}
+
+.navbar ul li {
+  display: inline;
+  position: relative;
+}
+
+.navbar ul li a {
+  display: block;
+  color: white;
+  text-align: center;
+  padding: 14px 20px;
+  text-decoration: none;
+}
+
+.navbar ul li a:hover {
+  background-color: #ddd;
+  color: black;
+}
+
+.shoppingcart {
+  position: fixed;
+  top: 10px; 
+  right: 10px;
+  z-index: 1000;
+}
+
+.cart {
+  display: none;
+  position: aulto;
+  background-color: #f1f1f1;
+  min-width: 200px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 1;
+  top: 100%;
+  left: 0;
+}
+
+.shoppingcart:hover .cart {
+  display: block;
+  
+}
+
+.cart li {
+  color: black;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+}
+
+.cart li:hover {
+  background-color: #ddd;
+}
+
+input[type="number"] {
+  width: 50px;
+  margin: 5px 0;
+}
+
+.cate {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.5s ease-out;
+}
+
+.category:hover .cate {
+  max-height: 200px; 
+}
+
+
+.menu {
+  margin-bottom: 20px;
+  display: flex;
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+
+.menu li {
+  display: inline-block;
+}
+
+.menu li a {
+  color: #fff;
+  text-decoration: none;
+  padding: 5px;
+}
+
+main {
+  padding: 20px;
+}
+
+.product-display {
+  text-align: center;
+}
+
+.product-display img {
+  width: 300px;
+  height: auto;
+}
+
+.price {
+  font-size: 24px;
+  color: green;
+}
+
+.rating {
+  margin: 10px 0;
+}
+
+.btn {
+  padding: 10px 20px;
+  margin: 5px;
+  border: none;
+  cursor: pointer;
+}
+
+button {
+  display: inline-block;
+  padding: 10px 20px;
+  background-color: #cec9bf;
+  color: #993d68;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  text-decoration: none;
+  font-size: 14px;
+  transition: background-color 0.3s ease;
+  outline: 2px solid #993d68;
+}
+
+button:hover {
+  background-color: #993d68;
+  color: #cec9bf;
+}
