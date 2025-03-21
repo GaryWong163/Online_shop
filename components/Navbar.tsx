@@ -14,6 +14,7 @@ const Navbar: React.FC = () => {
               <li><Link href="/laptop">Laptop</Link></li>
             </ul>
           </li>
+          <li><Link href="/admin">Admin Panel</Link></li>
         </ul>
       </nav>
     </header>

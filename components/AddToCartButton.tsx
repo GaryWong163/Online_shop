@@ -5,7 +5,7 @@ type AddToCartButtonProps = {
   product: {
     pid: number;
     name: string;
-    price: number;
+    price: number | string; // Allow both number and string types
     quantity: number;
   };
 };
@@ -35,7 +35,7 @@ const AddToCartButton: React.FC<AddToCartButtonProps> = ({ product }) => {
 
   return (
     <button onClick={handleAddToCart}>
-      <p>${product.price.toFixed(2)}</p>
+      <p>${Number(product.price).toFixed(2)}</p> {/* Ensure price is treated as a number */}
     </button>
   );
 };

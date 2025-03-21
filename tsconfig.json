@@ -22,7 +22,7 @@
     "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx"
-  ],
+, "../used/macbookair.tsx", "../used/Samsungflip.tsx", "../used/smartphone.tsx", "../used/Sonyxperia.tsx", "../used/manage-products.tsx"  ],
   "exclude": [
     "node_modules"
   ]

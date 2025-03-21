@@ -5,50 +5,40 @@ import Navbar from '../components/Navbar';
 import CartButton from '../components/CartButton';
 import AddToCartButton from '../components/AddToCartButton';
 
-const products = [
-  {
-    pid: 1,
-    name: "Iphone 15 pro max 256GB Grey",
-    price: 1000,
-    image: "img/iphone15promax.jpeg",
-    link: "/Iphone15",
-  },
-  {
-    pid: 2,
-    name: "Samsung Flip 5 512GB Green",
-    price: 1000,
-    image: "img/SamsungFlip5.jpeg",
-    link: "/Samsungflip",
-  },
-  {
-    pid: 3,
-    name: "Sony Xperia 1V 512GB Black",
-    price: 1000,
-    image: "img/SonyXperia.jpeg",
-    link: "Sonyxperia",
-  },
-];
+interface Product {
+  pid: number;
+  name: string;
+  price: number;
+  image: string;
+  link: string;
+}
 
 const OnlineStore: React.FC = () => {
+  const [products, setProducts] = useState<Product[]>([]);
   const [isClient, setIsClient] = useState(false);
-  const [cart, setCart] = useState<{ name: string; quantity: number }[]>([]);
 
   useEffect(() => {
     setIsClient(true);
-  }, []);
 
-  const addToCart = (productName: string) => {
-    setCart((prevCart) => {
-      const existingItem = prevCart.find((item) => item.name === productName);
-      if (existingItem) {
-        return prevCart.map((item) =>
-          item.name === productName ? { ...item, quantity: item.quantity + 1 } : item
-        );
-      } else {
-        return [...prevCart, { name: productName, quantity: 1 }];
+    const fetchProducts = async () => {
+      try {
+        const response = await fetch('/api/smartphones'); 
+        if (!response.ok) throw new Error('Failed to fetch products');
+
+        const data = await response.json();
+        // Ensure price is treated as a number
+        const parsedData = data.map((product: any) => ({
+          ...product,
+          price: Number(product.price),
+        }));
+        setProducts(parsedData);
+      } catch (error) {
+        console.error('Error fetching products:', error);
       }
-    });
-  };
+    };
+
+    fetchProducts();
+  }, []); // Empty dependency array ensures this runs only once
 
   if (!isClient) {
     return null;
@@ -58,8 +48,6 @@ const OnlineStore: React.FC = () => {
     <div>
       <Head>
         <title>Online Store</title>
-        <link rel="stylesheet" type="text/css" href="styles.css" />
-        <script src="script.js"></script>
       </Head>
       <Navbar />
       <CartButton />
@@ -75,9 +63,13 @@ const OnlineStore: React.FC = () => {
       <section className="product-list">
         {products.map((product) => (
           <div key={product.pid} className="product-item">
-            <a href={product.link}><img src={product.image} alt={product.name} /></a>
-            <a href={product.link}><p>{product.name}</p></a>
-            <p>${product.price}</p>
+            <Link href={`/product/${product.pid}`} legacyBehavior>
+              <a><img src={`/uploads/${product.image}`} alt={product.name} /></a>
+            </Link>
+            <Link href={`/product/${product.pid}`} legacyBehavior>
+              <a><p>{product.name}</p></a>
+            </Link>
+            <p>${product.price.toFixed(2)}</p>
             <AddToCartButton product={product} />
           </div>
         ))}

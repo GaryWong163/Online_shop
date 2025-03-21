@@ -2,7 +2,8 @@
   "/_app": "pages/_app.js",
   "/_error": "pages/_error.js",
   "/_document": "pages/_document.js",
-  "/": "pages/index.js",
-  "/smartphone": "pages/smartphone.js",
-  "/Iphone15": "pages/Iphone15.js"
+  "/admin": "pages/admin.js",
+  "/laptop": "pages/laptop.js",
+  "/api/laptop": "pages/api/laptop.js",
+  "/smartphone": "pages/smartphone.js"
 }
