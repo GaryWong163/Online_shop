@@ -12,7 +12,7 @@ app.prepare().then(() => {
   const port = 3000;
 
   // Serve static files from the 'public' directory
-  server.use(express.static(path.join(__dirname, 'public')));
+  server.use(express.static(path.join(__dirname, 'Online_shop')));
 
   server.use('/api', createProxyMiddleware({
     target: 'http://13.236.199.22',

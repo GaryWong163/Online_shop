@@ -5,6 +5,7 @@ import AddToCartButton from '../components/AddToCartButton';
 import Head from 'next/head';
 import Link from 'next/link';
 
+
 const MacbookAir: React.FC = () => {
   const product = {
     pid: 4,
@@ -24,16 +25,16 @@ const MacbookAir: React.FC = () => {
 
       <section className="menu">
         <ul>
-          <li><a href="../index.html">Home</a></li>
+          <li><Link href="/">Home</Link></li>
           <li><span> > </span></li>
-          <li><a href="../laptop.html">Laptop</a></li>
+          <li><Link href="/laptop">Laptop</Link></li>
           <li><span> > </span></li>
-          <li><a href="macbookair.html">Macbook Air</a></li>
+          <li><Link href="/macbookair">Macbook Air</Link></li>
         </ul>
       </section>
 
       <section className="product-display">
-        <img src="../img/macbook.webp" alt="Macbook Air" />
+        <img src={"../img/macbook.webp"} alt="Macbook Air" />
         <h1>Macbook Air</h1>
         <p className="price">${product.price}</p>
         <p className="short-description">Key features and specifications...</p>

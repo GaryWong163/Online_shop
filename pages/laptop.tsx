@@ -5,12 +5,13 @@ import Navbar from '../components/Navbar';
 import CartButton from '../components/CartButton';
 import AddToCartButton from '../components/AddToCartButton';
 
+
 const products = [
     {
       pid: 4,
       name: "Macbook Air",
       price: 1000,
-      image: "img/macbook.webp",
+      image: "../img/macbook.webp",
       link: "/macbookair",
     }
   ];

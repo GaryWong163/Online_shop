@@ -11,21 +11,21 @@ const products = [
     name: "Iphone 15 pro max 256GB Grey",
     price: 1000,
     image: "img/iphone15promax.jpeg",
-    link: "produt_page/Iphone15.html",
+    link: "/Iphone15",
   },
   {
     pid: 2,
     name: "Samsung Flip 5 512GB Green",
     price: 1000,
     image: "img/SamsungFlip5.jpeg",
-    link: "produt_page/Samsungflip.html",
+    link: "/Samsungflip",
   },
   {
     pid: 3,
     name: "Sony Xperia 1V 512GB Black",
     price: 1000,
     image: "img/SonyXperia.jpeg",
-    link: "produt_page/Sonyxperia.html",
+    link: "Sonyxperia",
   },
 ];
 
