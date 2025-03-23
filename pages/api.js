@@ -74,3 +74,19 @@ export async function fetchCategories() {
     }
   }
   
+  export async function deleteCategory(catid, callback) {
+    if (!confirm("Are you sure you want to delete this category?")) return;
+  
+    try {
+      const response = await fetch(`/categories/${catid}`, {
+        method: 'DELETE'
+      });
+  
+      if (!response.ok) throw new Error('Failed to delete category');
+      alert("Category deleted!");
+      callback(); // Call the callback to update the state
+    } catch (error) {
+      console.error('Error deleting category:', error);
+      throw error;
+    }
+  }

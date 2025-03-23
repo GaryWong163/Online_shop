@@ -1,26 +1,58 @@
 import React, { useState, useEffect } from 'react';
-import { fetchCategories, fetchProducts, addCategory, addProduct, deleteProduct } from './api';
+import { useRouter } from 'next/router';
+import axios from 'axios';
+import { fetchCategories, fetchProducts, addCategory, addProduct, deleteCategory, deleteProduct } from './api';
 import Navbar from '../components/Navbar';
+import Head from 'next/head';
+import Link from 'next/link';
 
 const AdminPanel: React.FC = () => {
   const [categories, setCategories] = useState<any[]>([]);
   const [products, setProducts] = useState<any[]>([]);
-
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+  const router = useRouter();
+  
   useEffect(() => {
-    async function loadData() {
+    const checkAuthAndFetchData = async () => {
       try {
+        const res = await axios.get("http://localhost:3000/auth/user", {
+          withCredentials: true,
+          validateStatus: (status) => status < 500, // Prevents axios from throwing errors for 401/403
+        });
+  
+        if (res.status === 401 || res.status === 403) {
+          router.replace("/login"); // 🚀 Redirect unauthorized users
+          return;
+        }
+  
+        if (res.data.role !== "admin") {
+          router.replace("/login"); // 🚀 Redirect non-admin users
+          return;
+        }
+  
+        // ✅ Fetch admin data
         const categoriesData = await fetchCategories();
-        setCategories(categoriesData);
-
         const productsData = await fetchProducts();
+  
+        setCategories(categoriesData);
         setProducts(productsData);
-      } catch (error) {
-        console.error('Error loading data:', error);
+        setLoading(false);
+      } catch (err) {
+        console.error("Access denied:", err);
+        router.replace("/login"); // 🚀 Redirect on any error
       }
-    }
+    };
+  
+    checkAuthAndFetchData();
+  }, [router]);
+  
+  
+  
+  
 
-    loadData();
-  }, []);
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p>{error}</p>;
 
   const handleAddCategory = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -42,6 +74,13 @@ const AdminPanel: React.FC = () => {
     setProducts(productsData);
   };
 
+  const handleDeleteCategory = async (catid: number) => {
+    await deleteCategory(catid, async () => {
+      const categoriesData = await fetchCategories();
+      setCategories(categoriesData);
+    });
+  };
+
   const handleDeleteProduct = async (pid: number) => {
     await deleteProduct(pid, async () => {
       const productsData = await fetchProducts();
@@ -59,6 +98,16 @@ const AdminPanel: React.FC = () => {
         <input type="text" id="categoryName" placeholder="Category Name" required />
         <button type="submit">Add Category</button>
       </form>
+
+      <h2>Categories</h2>
+      <ul>
+        {categories.map((category) => (
+          <li key={category.catid}>
+            {category.name}
+            <button onClick={() => handleDeleteCategory(category.catid)}>Delete</button>
+          </li>
+        ))}
+      </ul>
 
       <h2>Add Product</h2>
       <form id="productForm" onSubmit={handleAddProduct} encType="multipart/form-data">
