@@ -38,7 +38,7 @@ const OnlineStore: React.FC = () => {
     };
 
     fetchProducts();
-  }, []); // Empty dependency array ensures this runs only once
+  }, []);
 
   if (!isClient) {
     return null;
@@ -63,10 +63,10 @@ const OnlineStore: React.FC = () => {
       <section className="product-list">
         {products.map((product) => (
           <div key={product.pid} className="product-item">
-            <Link href={`/product/${product.pid}`} legacyBehavior>
+            <Link href={`product/${product.pid}`} legacyBehavior>
               <a><img src={`/uploads/${product.image}`} alt={product.name} /></a>
             </Link>
-            <Link href={`/product/${product.pid}`} legacyBehavior>
+            <Link href={`product/${product.pid}`} legacyBehavior>
               <a><p>{product.name}</p></a>
             </Link>
             <p>${product.price.toFixed(2)}</p>

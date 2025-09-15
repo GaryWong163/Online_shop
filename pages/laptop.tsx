@@ -26,7 +26,6 @@ const OnlineStore: React.FC = () => {
         if (!response.ok) throw new Error('Failed to fetch products');
 
         const data = await response.json();
-        // Ensure price is treated as a number
         const parsedData = data.map((product: any) => ({
           ...product,
           price: Number(product.price),
@@ -38,7 +37,7 @@ const OnlineStore: React.FC = () => {
     };
 
     fetchProducts();
-  }, []); // Empty dependency array ensures this runs only once
+  }, []);
 
   if (!isClient) {
     return null;

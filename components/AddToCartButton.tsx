@@ -1,41 +1,40 @@
 import React from 'react';
 import eventEmitter from '../utils/events';
 
+interface CartItem {
+  pid: number;
+  name: string;
+  price: number;
+  quantity: number;
+}
+
 type AddToCartButtonProps = {
-  product: {
-    pid: number;
-    name: string;
-    price: number | string; // Allow both number and string types
-    quantity: number;
-  };
+  product: CartItem;
 };
 
 const AddToCartButton: React.FC<AddToCartButtonProps> = ({ product }) => {
   const handleAddToCart = () => {
-    const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+    const cart: CartItem[] = JSON.parse(localStorage.getItem('cart') || '[]');
 
-    const existingProductIndex = cart.findIndex((item: AddToCartButtonProps['product']) => item.pid === product.pid);
+    const existingProductIndex = cart.findIndex((item) => item.pid === product.pid);
 
     if (existingProductIndex >= 0) {
-      const existingProduct = cart[existingProductIndex];
-      const newQuantity = isNaN(existingProduct.quantity) ? 1 : existingProduct.quantity + (isNaN(product.quantity) ? 1 : product.quantity);
-      cart[existingProductIndex].quantity = newQuantity;
+      cart[existingProductIndex].quantity += product.quantity || 1;
     } else {
       cart.push({
         ...product,
-        quantity: isNaN(product.quantity) ? 1 : product.quantity,
+        quantity: product.quantity || 1,
       });
     }
 
     localStorage.setItem('cart', JSON.stringify(cart));
-    console.log(cart);
-
+    console.log('Cart updated:', cart);
     eventEmitter.emit('cartUpdated');
   };
 
   return (
     <button onClick={handleAddToCart}>
-      <p>${Number(product.price).toFixed(2)}</p> {/* Ensure price is treated as a number */}
+      <p>Add to Cart - ${product.price.toFixed(2)}</p>
     </button>
   );
 };

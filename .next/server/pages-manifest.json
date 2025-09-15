@@ -1,10 +1,23 @@
 {
   "/_app": "pages/_app.js",
   "/_error": "pages/_error.js",
+  "/admin": "pages/admin.html",
+  "/api/[pid]": "pages/api/[pid].js",
+  "/api/get-user": "pages/api/get-user.js",
+  "/api/laptop": "pages/api/laptop.js",
+  "/api/products/[pid]": "pages/api/products/[pid].js",
+  "/api/products/validate": "pages/api/products/validate.js",
+  "/api/smartphone": "pages/api/smartphone.js",
+  "/changepwd": "pages/changepwd.html",
+  "/": "pages/index.html",
+  "/laptop": "pages/laptop.html",
+  "/login": "pages/login.html",
+  "/member-portal": "pages/member-portal.html",
+  "/order-confirmation": "pages/order-confirmation.html",
+  "/product/[pid]": "pages/product/[pid].html",
+  "/signup": "pages/signup.html",
+  "/smartphone": "pages/smartphone.html",
   "/_document": "pages/_document.js",
-  "/changepwd": "pages/changepwd.js",
-  "/login": "pages/login.js",
-  "/": "pages/index.js",
-  "/smartphone": "pages/smartphone.js",
-  "/admin": "pages/admin.js"
+  "/api": "pages/api.js",
+  "/404": "pages/404.html"
 }

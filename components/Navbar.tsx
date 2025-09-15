@@ -4,15 +4,34 @@ import axios from "axios";
 import { useRouter } from "next/router";
 
 const Navbar: React.FC = () => {
-  const [user, setUser] = useState<string | null>(null); // Start with null to prevent flickering
+  const [user, setUser] = useState<string | null>(null);
   const router = useRouter();
 
   useEffect(() => {
     const checkUser = async () => {
+      if (localStorage.getItem("loggedOut") === "true") {
+        console.log("Skipping auth check due to recent logout");
+        setUser("Guest");
+        return;
+      }
+
       try {
-        const res = await axios.get("http://localhost:3000/auth/user", {
+        console.log("Checking user, browser cookies:", document.cookie);
+        const res = await axios.get("https://s33.ierg4210.ie.cuhk.edu.hk/auth/user", {
           withCredentials: true,
         });
+        console.log("Fetched user:", res.data);
+        const expectedUserId = localStorage.getItem("expectedUserId");
+        if (expectedUserId && res.data.userId.toString() !== expectedUserId) {
+          console.warn(
+            `User ID mismatch! Expected: ${expectedUserId}, Got: ${res.data.userId}. Multiple authToken cookies may exist.`
+          );
+          await axios.post("https://s33.ierg4210.ie.cuhk.edu.hk/auth/logout", {}, { withCredentials: true });
+          localStorage.setItem("loggedOut", "true");
+          setUser("Guest");
+          router.push("/login");
+          return;
+        }
         setUser(res.data.role === "admin" ? "Admin" : "User");
       } catch (error) {
         console.error("User not authenticated:", error.response?.data || error);
@@ -21,15 +40,27 @@ const Navbar: React.FC = () => {
     };
 
     checkUser();
-  }, []);
+  }, [router]);
 
   const handleLogout = async () => {
     try {
-      await axios.post("http://localhost:3000/auth/logout", {}, { withCredentials: true });
-      setUser("Guest"); // Reset to Guest after logout
-      router.reload(); // Refresh page
+      console.log("Sending logout request, browser cookies:", document.cookie);
+      const response = await axios.post("https://s33.ierg4210.ie.cuhk.edu.hk/auth/logout", {}, { withCredentials: true });
+      console.log("Logout response:", response.data);
+      setUser("Guest");
+      localStorage.setItem("loggedOut", "true");
+      localStorage.removeItem("expectedUserId");
+      localStorage.removeItem("lastLogin");
+      localStorage.removeItem("redirectAfterLogin");
+      document.cookie = "authToken=; Path=/; Expires=Thu, 01 Jan 1970 00:00:00 GMT";
+      document.cookie = "sessionID=; Path=/; Expires=Thu, 01 Jan 1970 00:00:00 GMT";
+      document.cookie = "authToken=; Path=/auth; Expires=Thu, 01 Jan 1970 00:00:00 GMT";
+      document.cookie = "sessionID=; Path=/auth; Expires=Thu, 01 Jan 1970 00:00:00 GMT";
+      document.cookie = "authToken=; Path=/api; Expires=Thu, 01 Jan 1970 00:00:00 GMT";
+      document.cookie = "sessionID=; Path=/api; Expires=Thu, 01 Jan 1970 00:00:00 GMT";
+      router.push("/login");
     } catch (error) {
-      console.error("Logout failed", error);
+      console.error("Logout failed:", error.response?.data || error);
     }
   };
 
@@ -45,28 +76,31 @@ const Navbar: React.FC = () => {
               <li><Link href="/laptop">Laptop</Link></li>
             </ul>
           </li>
+          <li><Link href="/member-portal">Member Portal</Link></li>
           {user === "Admin" && <li><Link href="/admin">Admin Panel</Link></li>}
         </ul>
 
         <div className="user-actions">
-        {user === null ? (
-          <span>Loading...</span> // Show loading state while checking authentication
-        ) : (
-          <>
-            <span className="user-greeting">Welcome, {user}</span>
-            {user !== "Guest" ? (
-              <button className="logout-btn" onClick={handleLogout}>Logout</button>
-            ) : (
-              <Link href="/login">
-                <button className="login-btn">Login</button>
+          {user === null ? (
+            <span>Loading...</span>
+          ) : (
+            <>
+              <span className="user-greeting">Welcome, {user}</span>
+              {user !== "Guest" ? (
+                <button className="logout-btn" onClick={handleLogout}>
+                  Logout
+                </button>
+              ) : (
+                <Link href="/login">
+                  <button className="login-btn">Login</button>
+                </Link>
+              )}
+              <Link href="/changepwd">
+                <button className="pwd">Reset</button>
               </Link>
-            )}
-            <Link href="/changepwd">
-                <button className="pwd">reset</button>
-              </Link>
-          </>
-        )}
-      </div>
+            </>
+          )}
+        </div>
       </nav>
     </header>
   );

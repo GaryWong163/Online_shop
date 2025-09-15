@@ -1,9 +1,10 @@
-import { GetServerSideProps } from 'next';
+import { useState, useEffect } from 'react';
 import Head from 'next/head';
-import Navbar from '../../components/Navbar'; // Adjusted import path
+import Navbar from '../../components/Navbar';
 import CartButton from '../../components/CartButton';
 import AddToCartButton from '../../components/AddToCartButton';
 import Link from 'next/link';
+import { useRouter } from 'next/router';
 
 interface Product {
   pid: number;
@@ -11,37 +12,63 @@ interface Product {
   price: number;
   description: string;
   image: string;
+  catid: number;
 }
 
-interface ProductPageProps {
-  product: Product;
-}
+const ProductPage: React.FC = () => {
+  const [product, setProduct] = useState<Product | null>(null);
+  const [isClient, setIsClient] = useState(false);
+  const router = useRouter();
+  const { pid } = router.query;
 
-const ProductPage: React.FC<ProductPageProps> = ({ product }) => {
+  useEffect(() => {
+    setIsClient(true);
+    if (!pid) return;
+
+    const fetchProduct = async () => {
+      try {
+        const response = await fetch(`/api/${pid}`);
+        if (!response.ok) throw new Error('Failed to fetch product');
+        const data = await response.json();
+        data.price = Number(data.price);
+        setProduct(data);
+      } catch (error) {
+        console.error('Error fetching product:', error);
+        router.push('/404');
+      }
+    };
+
+    fetchProduct();
+  }, [pid]);
+
+  if (!isClient || !product) {
+    return <div>Loading...</div>;
+  }
+
+  // Map catid to category URL slug and display name
+  const categorySlug = product.catid === 1 ? 'smartphone' : product.catid === 2 ? 'laptop' : '';
+  const categoryDisplay = product.catid === 1 ? 'Smart Phone' : product.catid === 2 ? 'Laptop' : 'Unknown Category';
+
   return (
     <div>
       <Head>
         <title>{product.name} - Online Store</title>
-        <link rel="stylesheet" type="text/css" href="/pagestyles.css" />
       </Head>
       <header>
         <Navbar />
       </header>
-
       <div className="shoppingcart">
         <CartButton />
       </div>
-
       <section className="menu">
         <ul>
           <li><Link href="/">Home</Link></li>
-          <li><span> > </span></li>
-          <li><Link href={product.catid === 1 ? "/smartphone" : "/laptop"}>{product.catid === 1 ? "Smart Phone" : "Laptop"}</Link></li>
-          <li><span> > </span></li>
+          <li><span>&gt;</span></li>
+          <li><Link href={`/${categorySlug}`}>{categoryDisplay}</Link></li>
+          <li><span>&gt;</span></li>
           <li><Link href={`/product/${product.pid}`}>{product.name}</Link></li>
         </ul>
       </section>
-
       <section className="product-display">
         <img src={`/uploads/${product.image}`} alt={product.name} />
         <h1>{product.name}</h1>
@@ -51,27 +78,6 @@ const ProductPage: React.FC<ProductPageProps> = ({ product }) => {
       </section>
     </div>
   );
-};
-
-export const getServerSideProps: GetServerSideProps = async (context) => {
-  const { pid } = context.params!;
-  const res = await fetch(`http://localhost:3000/api/products/${pid}`);
-
-  if (!res.ok) {
-    console.error('Failed to fetch product:', res.statusText);
-    return {
-      notFound: true,
-    };
-  }
-
-  const product = await res.json();
-  product.price = Number(product.price); // Ensure price is treated as a number
-
-  return {
-    props: {
-      product,
-    },
-  };
 };
 
 export default ProductPage;
