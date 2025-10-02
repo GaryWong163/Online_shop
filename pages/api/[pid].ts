@@ -3,11 +3,11 @@ import mysql from 'mysql2/promise';
 
 // Create a database connection pool
 const pool = mysql.createConnection({
-  host: "localhost.c1ac80sqslkb.ap-southeast-2.rds.amazonaws.com",
-  port: 3306,
-  user: "root",
-  password: "IERG4210",
-  database: "ecommerce",
+  host: process.env.DB_HOST,
+  port: process.env.DB_PORT,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_NAME,
 });
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
